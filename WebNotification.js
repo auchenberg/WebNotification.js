@@ -7,8 +7,8 @@
 
 ;(function(window) {
 
-  var notification = window.Notification,
-      prefixed = window.webkitNotifications;
+  var nativeNotification = window.Notification,
+      prefixedNotification = window.webkitNotifications;
 
   var utils = {
     isFunction: function(obj) {
@@ -17,27 +17,27 @@
   }
 
   function WebNotification(title, options) {
-    return new notification(title, options);
+    return new nativeNotification(title, options);
   }
 
   WebNotification.getPermission = function() {
 
-    if (notification) {
+    if (nativeNotification) {
 
       // Official W3C Web Notifications API
-      if (notification.permission) {
-        return notification.permission
+      if (nativeNotification.permission) {
+        return nativeNotification.permission
       }
 
       // Old Safari API
-      if (utils.isFunction(notification.permissionLevel)) {
-        return notification.permissionLevel();
+      if (utils.isFunction(nativeNotification.permissionLevel)) {
+        return nativeNotification.permissionLevel();
       }
     }
 
-    // Old prefixed WebKit API
-    if (prefixed && utils.isFunction(prefixed.checkPermission)) {
-      switch (prefixed.checkPermission()) {
+    // Old prefixedNotification WebKit API
+    if (prefixedNotification && utils.isFunction(prefixedNotification.checkPermission)) {
+      switch (prefixedNotification.checkPermission()) {
         case 0:
           return 'granted'
           break;
@@ -64,13 +64,13 @@
       }
     };
 
-    // Prefixed first, then native
-    if (prefixed && utils.isFunction(prefixed.requestPermission)) {
-      prefixed.requestPermission(_onPermissionRequested);
-    } else if (notification && utils.isFunction(notification.requestPermission)) {
-      notification.requestPermission(_onPermissionRequested);
+    // Native first, then prefxied
+    if (nativeNotification && utils.isFunction(nativeNotification.requestPermission)) {
+      nativeNotification.requestPermission(_onPermissionRequested);
+    } else if (prefixedNotification && utils.isFunction(prefixedNotification.requestPermission)) {
+      prefixedNotification.requestPermission(_onPermissionRequested);
     } else {
-      throw 'requestPermission not supported';
+      throw 'Could not call requestPermission';
     }
 
   };
