@@ -1,3 +1,10 @@
+/** @license
+ * WebNotification.js <https://github.com/auchenberg/WebNotification.js/>
+ * Released under the MIT license
+ * Author: Kenneth Auchenberg
+ * Version: 0.1.0
+ */
+
 ;(function(window) {
 
   var notification = window.Notification,
