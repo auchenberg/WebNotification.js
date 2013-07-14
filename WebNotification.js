@@ -75,17 +75,6 @@
 
   };
 
-  WebNotification.isSupported = function() {
-
-    if (notification) {
-      return true;
-    } else {
-      return prefixed ? true : false;
-    }
-
-    return false;
-  };
-
   WebNotification.permission = WebNotification.getPermission();
 
 
