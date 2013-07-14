@@ -77,14 +77,16 @@
 
   WebNotification.permission = WebNotification.getPermission();
 
-
   if (typeof define === 'function' && define.amd) {
     define(function() {
-      return (window.WebNotification = WebNotification);
+      if('Notification' in window) {
+        return (window.Notification = WebNotification);
+      }
     });
   } else {
-    window.WebNotification = WebNotification;
+    if('Notification' in window) {
+      window.Notification = WebNotification;
+    }
   }
 
 })(this);
-
