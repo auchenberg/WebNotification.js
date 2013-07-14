@@ -24,18 +24,18 @@
 
     if (nativeNotification) {
 
-      // Official W3C Web Notifications API
+      // Official W3C/WHATWG Web Notifications API
       if (nativeNotification.permission) {
         return nativeNotification.permission
       }
 
-      // Old Safari API
+      // Older WebKit API
       if (utils.isFunction(nativeNotification.permissionLevel)) {
         return nativeNotification.permissionLevel();
       }
     }
 
-    // Old prefixedNotification WebKit API
+    // Oldprefixed WebKit API
     if (prefixedNotification && utils.isFunction(prefixedNotification.checkPermission)) {
       switch (prefixedNotification.checkPermission()) {
         case 0:
