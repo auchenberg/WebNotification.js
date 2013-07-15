@@ -4,49 +4,50 @@
  * Author: Kenneth Auchenberg
  * Version: 0.1.0
  */
+ /* global define */
+
 
 ;(function(window) {
 
-  var nativeNotification = window.Notification,
-      prefixedNotification = window.webkitNotifications;
+  'use strict';
+
+  var NativeNotification = window.Notification,
+      PrefixedNotification = window.webkitNotifications;
 
   var utils = {
     isFunction: function(obj) {
       return typeof obj === 'function';
     }
-  }
+  };
 
   function WebNotification(title, options) {
-    return new nativeNotification(title, options);
+    return new NativeNotification(title, options);
   }
 
   WebNotification.getPermission = function() {
 
-    if (nativeNotification) {
+    if (NativeNotification) {
 
       // Official W3C/WHATWG Web Notifications API
-      if (nativeNotification.permission) {
-        return nativeNotification.permission
+      if (NativeNotification.permission) {
+        return NativeNotification.permission;
       }
 
       // Older WebKit API
-      if (utils.isFunction(nativeNotification.permissionLevel)) {
-        return nativeNotification.permissionLevel();
+      if (utils.isFunction(NativeNotification.permissionLevel)) {
+        return NativeNotification.permissionLevel();
       }
     }
 
     // Oldprefixed WebKit API
-    if (prefixedNotification && utils.isFunction(prefixedNotification.checkPermission)) {
-      switch (prefixedNotification.checkPermission()) {
+    if (PrefixedNotification && utils.isFunction(PrefixedNotification.checkPermission)) {
+      switch (PrefixedNotification.checkPermission()) {
         case 0:
-          return 'granted'
-          break;
+          return 'granted';
         case 1:
-          return 'default'
-          break;
+          return 'default';
         case 2:
-          return 'denied'
-          break;
+          return 'denied';
       }
     }
 
@@ -60,15 +61,15 @@
       context.permission = context.getPermission();
 
       if (callback) {
-        callback.call(this);
+        callback.call(context);
       }
-    };
+    }
 
     // Native first, then prefxied
-    if (nativeNotification && utils.isFunction(nativeNotification.requestPermission)) {
-      nativeNotification.requestPermission(_onPermissionRequested);
-    } else if (prefixedNotification && utils.isFunction(prefixedNotification.requestPermission)) {
-      prefixedNotification.requestPermission(_onPermissionRequested);
+    if (NativeNotification && utils.isFunction(NativeNotification.requestPermission)) {
+      NativeNotification.requestPermission(_onPermissionRequested);
+    } else if (PrefixedNotification && utils.isFunction(PrefixedNotification.requestPermission)) {
+      PrefixedNotification.requestPermission(_onPermissionRequested);
     } else {
       throw 'Could not call requestPermission';
     }
@@ -80,7 +81,8 @@
   if (typeof define === 'function' && define.amd) {
     define(function() {
       if('Notification' in window) {
-        return (window.Notification = WebNotification);
+        window.Notification = WebNotification;
+        return WebNotification;
       }
     });
   } else {
